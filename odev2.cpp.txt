@@ -1,0 +1,55 @@
+﻿#include <stdio.h>
+#include <stdlib.h>
+
+// Standart qsort karşılaştırma fonksiyonu
+int compare(const void* a, const void* b) {
+    return (*(int*)a - *(int*)b);
+}
+
+// Özel sıralama: büyük-küçük-büyük-küçük...
+void specialSort(int arr[], int n) {
+    // önce diziyi sırala
+    qsort(arr, n, sizeof(int), compare);
+
+    int* temp = (int*)malloc(n * sizeof(int));
+    if (temp == NULL) {
+        printf("Bellek hatasi!\n");
+        return;
+    }
+
+    int left = 0;
+    int right = n - 1;
+    int k = 0;
+
+    // büyük-küçük yerleştirme
+    while (left <= right) {
+        if (left != right) {
+            temp[k++] = arr[right--]; // en büyük
+            temp[k++] = arr[left++];  // en küçük
+        }
+        else {
+            temp[k++] = arr[left++];  // orta eleman
+        }
+    }
+
+    // geri kopyala
+    for (int i = 0; i < n; i++) {
+        arr[i] = temp[i];
+    }
+
+    free(temp);
+}
+
+int main() {
+    int arr[] = { 60, 80, 3, 9, 57, 11 };
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    specialSort(arr, n);
+
+    printf("Sonuc: ");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+
+    return 0;
+}
